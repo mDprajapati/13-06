@@ -1,0 +1,30 @@
+{
+  "name": "13-06-version",
+  "version": "1.0.105",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "npm-run-all build:babel build:style",
+    "build:babel": "npx babel src --out-dir dist --copy-files",
+    "build:style": "node -e \"require('mkdirp').sync('dist/style')\" && npx copyfiles -u 1 style/* dist/style"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "copyfiles": "^2.4.1",
+    "mkdirp": "^3.0.1",
+    "npm-run-all": "^4.1.5",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.0.0-rc.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
