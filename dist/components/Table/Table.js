@@ -7,6 +7,22 @@ Object.defineProperty(exports, "__esModule", {
 exports.Table = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _Table = require("../../../style/components/Table/Table");
+var _zoom = _interopRequireDefault(require("../../libs/zoom.png"));
+var _viewHover = _interopRequireDefault(require("../../libs/icons/view-hover.svg"));
+var _expandRowIcon = _interopRequireDefault(require("../../libs/icons/expand-row-icon.svg"));
+var _collapseIn = _interopRequireDefault(require("../../libs/icons/collapse-in.svg"));
+var _collapseOn = _interopRequireDefault(require("../../libs/icons/collapse-on.svg"));
+var _filterAction = _interopRequireDefault(require("../../libs/icons/filter-action.svg"));
+var _refresh = _interopRequireDefault(require("../../libs/icons/refresh.svg"));
+var _edit = _interopRequireDefault(require("../../libs/icons/edit.svg"));
+var _delete = _interopRequireDefault(require("../../libs/icons/delete.svg"));
+var _range = _interopRequireDefault(require("../../libs/icons/range.svg"));
+var _sorting = _interopRequireDefault(require("../../libs/icons/sorting.svg"));
+var _manageCol = _interopRequireDefault(require("../../libs/icons/manage-col.svg"));
+var _allActionsIcon = _interopRequireDefault(require("../../libs/icons/all-actions-icon.svg"));
+var _arrowLeft = _interopRequireDefault(require("../../libs/icons/arrow-left.svg"));
+var _arrowRight = _interopRequireDefault(require("../../libs/icons/arrow-right.svg"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -37,34 +53,38 @@ var Table = function Table(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     visibleColumns = _useState4[0],
     setVisibleColumns = _useState4[1];
-  var _useState5 = (0, _react.useState)([]),
+  var _useState5 = (0, _react.useState)(recordsPerPageOption[0]),
     _useState6 = _slicedToArray(_useState5, 2),
-    selectedRows = _useState6[0],
-    setSelectedRows = _useState6[1];
-  var _useState7 = (0, _react.useState)(false),
+    recordsPerPage = _useState6[0],
+    setRecordsPerPage = _useState6[1];
+  var _useState7 = (0, _react.useState)(""),
     _useState8 = _slicedToArray(_useState7, 2),
-    selectAll = _useState8[0],
-    setSelectAll = _useState8[1];
-  var _useState9 = (0, _react.useState)(recordsPerPageOption[0]),
+    sortColumn = _useState8[0],
+    setSortColumn = _useState8[1];
+  var _useState9 = (0, _react.useState)("asc"),
     _useState10 = _slicedToArray(_useState9, 2),
-    recordsPerPage = _useState10[0],
-    setRecordsPerPage = _useState10[1];
-  var _useState11 = (0, _react.useState)(""),
+    sortDirection = _useState10[0],
+    setSortDirection = _useState10[1];
+  var _useState11 = (0, _react.useState)({}),
     _useState12 = _slicedToArray(_useState11, 2),
-    sortColumn = _useState12[0],
-    setSortColumn = _useState12[1];
-  var _useState13 = (0, _react.useState)("asc"),
+    searchFilters = _useState12[0],
+    setSearchFilters = _useState12[1];
+  var _useState13 = (0, _react.useState)([]),
     _useState14 = _slicedToArray(_useState13, 2),
-    sortDirection = _useState14[0],
-    setSortDirection = _useState14[1];
-  var _useState15 = (0, _react.useState)({}),
+    selectedRowKeys = _useState14[0],
+    setSelectedRowKeys = _useState14[1];
+  var _useState15 = (0, _react.useState)(""),
     _useState16 = _slicedToArray(_useState15, 2),
-    searchFilters = _useState16[0],
-    setSearchFilters = _useState16[1];
-  var _useState17 = (0, _react.useState)([]),
+    searchQuery = _useState16[0],
+    setSearchQuery = _useState16[1];
+  var _useState17 = (0, _react.useState)(false),
     _useState18 = _slicedToArray(_useState17, 2),
-    selectedRowKeys = _useState18[0],
-    setSelectedRowKeys = _useState18[1];
+    radioValue = _useState18[0],
+    setRadioValue = _useState18[1];
+  var _useState19 = (0, _react.useState)(false),
+    _useState20 = _slicedToArray(_useState19, 2),
+    isFiltered = _useState20[0],
+    setIsFiltered = _useState20[1];
   var toggleExpand = function toggleExpand(rowIndex) {
     var expandedRowsCopy = _toConsumableArray(expandedRows);
     if (expandedRowsCopy.includes(rowIndex)) {
@@ -79,11 +99,11 @@ var Table = function Table(_ref) {
   };
   (0, _react.useEffect)(function () {
     var calculateVisibleColumns = function calculateVisibleColumns() {
-      var tableWidth = window.innerWidth - 200; // Adjust the value based on your layout
+      var tableWidth = window.innerWidth - 200;
       var totalWidth = 0;
       var visibleCols = [];
       for (var i = 0; i < columns.length; i++) {
-        var colWidth = columns[i].width || 100; // Set a default width if not specified
+        var colWidth = columns[i].width || 100;
         if (totalWidth + colWidth <= tableWidth) {
           totalWidth += colWidth;
           visibleCols.push(columns[i]);
@@ -108,28 +128,12 @@ var Table = function Table(_ref) {
     return /*#__PURE__*/_react["default"].createElement(_Table.ExpandedDataList, null, hiddenColumns.map(function (key) {
       return /*#__PURE__*/_react["default"].createElement(_Table.ExpandedDataListItem, {
         key: key
-      }, "".concat(key, ": ").concat(row[key]));
+      }, /*#__PURE__*/_react["default"].createElement("span", {
+        style: {
+          color: '#2991D6'
+        }
+      }, "".concat(key)), " : \xA0\xA0", "".concat(row[key]));
     }));
-  };
-  var toggleSelect = function toggleSelect(rowIndex) {
-    var selectedRowsCopy = _toConsumableArray(selectedRows);
-    if (selectedRowsCopy.includes(rowIndex)) {
-      selectedRowsCopy.splice(selectedRowsCopy.indexOf(rowIndex), 1);
-    } else {
-      selectedRowsCopy.push(rowIndex);
-    }
-    setSelectedRows(selectedRowsCopy);
-  };
-  var toggleSelectAll = function toggleSelectAll() {
-    if (selectAll) {
-      setSelectedRows([]);
-    } else {
-      var allRowIndexes = rows.map(function (_, index) {
-        return index;
-      });
-      setSelectedRows(allRowIndexes);
-    }
-    setSelectAll(!selectAll);
   };
   var handleRecordsPerPageChange = function handleRecordsPerPageChange(e) {
     setRecordsPerPage(Number(e.target.value));
@@ -174,67 +178,212 @@ var Table = function Table(_ref) {
     }
   });
   var totalPages = Math.ceil(sortedRows.length / recordsPerPage);
-  var _useState19 = (0, _react.useState)(1),
-    _useState20 = _slicedToArray(_useState19, 2),
-    currentPage = _useState20[0],
-    setCurrentPage = _useState20[1];
+  var _useState21 = (0, _react.useState)(1),
+    _useState22 = _slicedToArray(_useState21, 2),
+    currentPage = _useState22[0],
+    setCurrentPage = _useState22[1];
   var handlePageChange = function handlePageChange(page) {
     setCurrentPage(page);
   };
   var paginatedRows = sortedRows.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage);
   var handleCheckboxChange = function handleCheckboxChange(event, rowKey) {
-    debugger;
     var checked = event.target.checked;
-    debugger;
     var updatedSelectedRowKeys = _toConsumableArray(selectedRowKeys);
-    debugger;
     if (checked) {
-      debugger;
       updatedSelectedRowKeys.push(rowKey);
     } else {
       var index = updatedSelectedRowKeys.indexOf(rowKey);
-      debugger;
       if (index !== -1) {
-        debugger;
         updatedSelectedRowKeys.splice(index, 1);
       }
     }
-    debugger;
     setSelectedRowKeys(updatedSelectedRowKeys);
     var updatedSelectedRowObjects = rows.filter(function (row) {
       return updatedSelectedRowKeys.includes(row.key);
     });
-    debugger;
     rowSelection.onChange(updatedSelectedRowKeys, updatedSelectedRowObjects);
   };
   var onSelectChange = function onSelectChange(newSelectedRowKeys, newSelectedRowObjects) {
-    debugger;
     console.log("selectedRowKeys changed: ", newSelectedRowObjects);
-    debugger;
     setSelectedRowKeys(newSelectedRowKeys);
     rowSelection.onChange(newSelectedRowKeys, newSelectedRowObjects);
   };
-  return /*#__PURE__*/_react["default"].createElement(_Table.Container, null, /*#__PURE__*/_react["default"].createElement(_Table.TableWrapper, null, /*#__PURE__*/_react["default"].createElement(_Table.ResponsiveTable, null, /*#__PURE__*/_react["default"].createElement("thead", null, /*#__PURE__*/_react["default"].createElement("tr", {
+  var handleRadioClick = function handleRadioClick(value) {
+    setRadioValue(value);
+    console.log(value);
+  };
+  var iconData = [{
+    image: _allActionsIcon["default"],
+    alt: "Icon 8"
+  }, {
+    image: _manageCol["default"],
+    alt: "Icon 7"
+  }, {
+    image: _sorting["default"],
+    alt: "Icon 6"
+  }, {
+    image: _range["default"],
+    alt: "Icon 5"
+  }, {
+    image: _delete["default"],
+    alt: "Icon 4"
+  }, {
+    image: _edit["default"],
+    alt: "Icon 3"
+  }, {
+    image: _refresh["default"],
+    alt: "Icon 2"
+  }, {
+    image: _filterAction["default"],
+    alt: "Icon 1"
+  }
+  // Add more icon objects as needed
+  ];
+
+  var _handleClickFilters = function _handleClickFilters(obj, index) {
+    switch (obj.alt) {
+      case "Icon 1":
+        setIsFiltered(!isFiltered);
+        break;
+      default:
+        break;
+    }
+  };
+  var _handleChangePage = function _handleChangePage(val) {
+    setCurrentPage(val);
+  };
+  var PaginationSection = function PaginationSection() {
+    var _ref2, _ref3;
+    return /*#__PURE__*/_react["default"].createElement("div", {
+      style: {
+        display: "flex",
+        padding: "7px 0"
+      }
+    }, "Page:", /*#__PURE__*/_react["default"].createElement("img", {
+      src: _arrowLeft["default"],
+      alt: "prev"
+      // style={{ width: "15%" }}
+      ,
+      style: (_ref2 = {
+        padding: "0",
+        color: "#000",
+        border: "1px solid #D8D8D8"
+      }, _defineProperty(_ref2, "color", "#120e5b"), _defineProperty(_ref2, "display", "inline-block"), _defineProperty(_ref2, "fontSize", "0"), _defineProperty(_ref2, "height", "20px"), _defineProperty(_ref2, "lineHeight", "18px"), _defineProperty(_ref2, "textAlign", "center"), _defineProperty(_ref2, "width", "20px"), _defineProperty(_ref2, "float", "left"), _defineProperty(_ref2, "margin", "0 5px"), _defineProperty(_ref2, "backgroundPosition", "center center"), _defineProperty(_ref2, "backgroundRepeat", "no-repeat"), _defineProperty(_ref2, "backgroundSize", "18px 18px"), _ref2),
+      onClick: function onClick() {
+        return handlePageChange(currentPage - 1);
+      }
+    }), /*#__PURE__*/_react["default"].createElement("input", {
+      type: "number",
+      style: {
+        width: "60px",
+        border: "1px solid #D8D8D8",
+        padding: "0 20px 0 5px",
+        height: "20px",
+        verticalAlign: "top"
+      },
+      value: currentPage,
+      onChange: function onChange(e) {
+        return _handleChangePage(e.target.value);
+      }
+    }), /*#__PURE__*/_react["default"].createElement("img", {
+      src: _arrowRight["default"],
+      alt: "next",
+      style: (_ref3 = {
+        padding: "0",
+        color: "#000",
+        border: "1px solid #D8D8D8"
+      }, _defineProperty(_ref3, "color", "#120e5b"), _defineProperty(_ref3, "display", "inline-block"), _defineProperty(_ref3, "fontSize", "0"), _defineProperty(_ref3, "height", "20px"), _defineProperty(_ref3, "lineHeight", "18px"), _defineProperty(_ref3, "textAlign", "center"), _defineProperty(_ref3, "width", "20px"), _defineProperty(_ref3, "float", "left"), _defineProperty(_ref3, "margin", "0 5px"), _defineProperty(_ref3, "backgroundPosition", "center center"), _defineProperty(_ref3, "backgroundRepeat", "no-repeat"), _defineProperty(_ref3, "backgroundSize", "18px 18px"), _ref3),
+      onClick: function onClick() {
+        return handlePageChange(currentPage + 1);
+      }
+    }), /*#__PURE__*/_react["default"].createElement("span", {
+      style: {
+        marginTop: "-.2rem"
+      }
+    }, "of ", totalPages, " \xA0 | View \xA0", /*#__PURE__*/_react["default"].createElement("select", {
+      style: {
+        border: "1px solid #D8D8D8"
+      },
+      value: recordsPerPage,
+      onChange: function onChange(e) {
+        return handleRecordsPerPageChange(e);
+      }
+    }, recordsPerPageOption.map(function (option) {
+      return /*#__PURE__*/_react["default"].createElement("option", {
+        key: option,
+        value: option
+      }, option);
+    })), "\xA0 Records \xA0\xA0 | Total ", rows.length, " records"));
+  };
+  return /*#__PURE__*/_react["default"].createElement(_Table.Container, null, /*#__PURE__*/_react["default"].createElement(_Table.TableWrapper, null, /*#__PURE__*/_react["default"].createElement("div", {
+    style: {
+      display: 'flex',
+      "float": 'left'
+    }
+  }, /*#__PURE__*/_react["default"].createElement(PaginationSection, null)), iconData.map(function (icon, index) {
+    return /*#__PURE__*/_react["default"].createElement(_Table.IconButton, {
+      key: index,
+      onClick: function onClick() {
+        return _handleClickFilters(icon, index);
+      }
+    }, /*#__PURE__*/_react["default"].createElement("img", {
+      style: {
+        display: "flex",
+        border: 0,
+        backgroundColor: "transparent",
+        borderRight: "1px solid #D8D8D8",
+        "float": "left",
+        height: "28px",
+        lineHeight: "28px",
+        textAlign: "center",
+        width: "28px",
+        color: "#120E5B",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "auto 14px",
+        fontSize: 0
+      },
+      src: icon.image,
+      alt: icon.alt
+    }));
+  }), /*#__PURE__*/_react["default"].createElement(_Table.ResponsiveTable, null, /*#__PURE__*/_react["default"].createElement("thead", null, /*#__PURE__*/_react["default"].createElement("tr", {
     style: _Table.TheadStyle
   }, /*#__PURE__*/_react["default"].createElement("th", null, /*#__PURE__*/_react["default"].createElement("input", {
-    type: "checkbox"
-    // checked={selectAll}
-    // onChange={toggleSelectAll}
-    ,
+    style: {
+      width: '20px',
+      height: '20px',
+      display: 'inline-block',
+      verticalAlign: 'middle'
+    },
+    type: "checkbox",
     checked: selectedRowKeys.length === rows.length,
     onChange: function onChange(event) {
       return onSelectChange(event.target.checked ? rows.map(function (row) {
         return row.key;
       }) : [], event.target.checked ? rows : []);
     }
-  })), /*#__PURE__*/_react["default"].createElement("th", null, "Expand"), visibleColumns.map(function (column) {
+  })), /*#__PURE__*/_react["default"].createElement("th", null, /*#__PURE__*/_react["default"].createElement("img", {
+    src: _viewHover["default"],
+    alt: "zoom icon",
+    style: {
+      width: "20px",
+      marginLeft: "20%"
+    }
+  })), /*#__PURE__*/_react["default"].createElement("th", null, /*#__PURE__*/_react["default"].createElement("img", {
+    src: _expandRowIcon["default"],
+    alt: "zoom icon",
+    style: {
+      width: "20px",
+      marginLeft: "20%"
+    }
+  })), visibleColumns.map(function (column) {
     return /*#__PURE__*/_react["default"].createElement("th", {
       key: column.key,
       onClick: function onClick() {
         return handleColumnSort(column.key);
       }
     }, column.title, sortColumn === column.key && /*#__PURE__*/_react["default"].createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
-  })), /*#__PURE__*/_react["default"].createElement("tr", null, /*#__PURE__*/_react["default"].createElement("th", null), /*#__PURE__*/_react["default"].createElement("th", null), visibleColumns.map(function (column) {
+  })), isFiltered ? /*#__PURE__*/_react["default"].createElement("tr", null, /*#__PURE__*/_react["default"].createElement("th", null), /*#__PURE__*/_react["default"].createElement("th", null), /*#__PURE__*/_react["default"].createElement("th", null), visibleColumns.map(function (column) {
     return /*#__PURE__*/_react["default"].createElement("th", {
       key: column.key,
       style: {
@@ -256,48 +405,56 @@ var Table = function Table(_ref) {
         boxSizing: "border-box"
       }
     })));
-  }))), /*#__PURE__*/_react["default"].createElement("tbody", null, paginatedRows.map(function (row, rowIndex) {
+  })) : null), /*#__PURE__*/_react["default"].createElement("tbody", null, paginatedRows.filter(function (row) {
+    return Object.values(row).some(function (value) {
+      return typeof value === "string" && value.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }).map(function (row, rowIndex) {
     return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, {
       key: rowIndex
     }, /*#__PURE__*/_react["default"].createElement("tr", null, /*#__PURE__*/_react["default"].createElement("td", null, /*#__PURE__*/_react["default"].createElement("input", {
-      type: "checkbox"
-      // onChange={() => toggleSelect(rowIndex)}
-      // checked={selectedRowKeys.includes(rowIndex.key)}
-      ,
+      style: {
+        width: '20px',
+        height: '20px',
+        display: 'inline-block',
+        verticalAlign: 'middle'
+      },
+      type: "checkbox",
       onChange: function onChange(event) {
         return handleCheckboxChange(event, row);
+      }
+    })), /*#__PURE__*/_react["default"].createElement("td", null, /*#__PURE__*/_react["default"].createElement("img", {
+      src: _zoom["default"],
+      alt: "zoom icon",
+      style: {
+        width: "20px",
+        marginLeft: "20%"
       }
     })), /*#__PURE__*/_react["default"].createElement("td", null, /*#__PURE__*/_react["default"].createElement(_Table.ExpandButton, {
       onClick: function onClick() {
         return toggleExpand(rowIndex);
       }
-    }, isRowExpanded(rowIndex) ? "Collapse" : "Expand")), visibleColumns.map(function (column, cellIndex) {
+    }, isRowExpanded(rowIndex) ? /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement("img", {
+      src: _collapseOn["default"],
+      alt: "zoom icon",
+      style: {
+        width: "12px",
+        marginLeft: "5%"
+      }
+    })) : /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement("img", {
+      src: _collapseIn["default"],
+      alt: "zoom icon",
+      style: {
+        width: "15px",
+        marginLeft: "5%"
+      }
+    })))), visibleColumns.map(function (column, cellIndex) {
       return /*#__PURE__*/_react["default"].createElement("td", {
         key: cellIndex
       }, row[column.dataIndex]);
     })), isRowExpanded(rowIndex) && /*#__PURE__*/_react["default"].createElement(_Table.ExpandedRow, null, /*#__PURE__*/_react["default"].createElement("td", {
       colSpan: visibleColumns.length + 2
     }, /*#__PURE__*/_react["default"].createElement(_Table.ExpandedDataGrid, null, renderExpandedData(row)))));
-  })))), "Records per page:", /*#__PURE__*/_react["default"].createElement("select", {
-    value: recordsPerPage,
-    onChange: function onChange(e) {
-      return handleRecordsPerPageChange(e);
-    }
-  }, recordsPerPageOption.map(function (option) {
-    return /*#__PURE__*/_react["default"].createElement("option", {
-      key: option,
-      value: option
-    }, option);
-  })), /*#__PURE__*/_react["default"].createElement("button", {
-    disabled: currentPage === 1,
-    onClick: function onClick() {
-      return handlePageChange(currentPage - 1);
-    }
-  }, "Previous"), /*#__PURE__*/_react["default"].createElement("span", null, "Page ", currentPage, " of ", totalPages), /*#__PURE__*/_react["default"].createElement("button", {
-    disabled: currentPage === totalPages,
-    onClick: function onClick() {
-      return handlePageChange(currentPage + 1);
-    }
-  }, "Next"));
+  })))), /*#__PURE__*/_react["default"].createElement(PaginationSection, null));
 };
 exports.Table = Table;
