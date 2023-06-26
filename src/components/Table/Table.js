@@ -33,6 +33,7 @@ export const Table = ({
   rows,
   recordsPerPageOption,
   rowSelection,
+  isAnnex
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState([]);
@@ -87,8 +88,8 @@ export const Table = ({
       <ExpandedDataList>
         {hiddenColumns.map((key) => (
           <ExpandedDataListItem key={key}>
-          <span style={{color:'#2991D6'}}>{`${key}`}</span> : &nbsp;&nbsp;{`${row[key]}`}
-            {/* {`${key}: ${row[key]}`} */}
+            <span style={{ color: "#2991D6" }}>{`${key}`}</span> : &nbsp;&nbsp;
+            {`${row[key]}`}
           </ExpandedDataListItem>
         ))}
       </ExpandedDataList>
@@ -183,7 +184,6 @@ export const Table = ({
     { image: editAction, alt: "Icon 3" },
     { image: refreshAction, alt: "Icon 2" },
     { image: filterAction, alt: "Icon 1" },
-    // Add more icon objects as needed
   ];
   const _handleClickFilters = (obj, index) => {
     switch (obj.alt) {
@@ -204,7 +204,6 @@ export const Table = ({
       <img
         src={arrowLeft}
         alt="prev"
-        // style={{ width: "15%" }}
         style={{
           padding: "0",
           color: "#000",
@@ -323,10 +322,10 @@ export const Table = ({
       </RadioContainer> */}
       {/* <ImageButtonSection type="button" value="Add a new row" ></ImageButtonSection> */}
       <TableWrapper>
-      <div style={{display:'flex',float:'left'}}>
-      <PaginationSection />
-      </div>
-      
+        <div style={{ display: "flex", float: "left" }}>
+          <PaginationSection />
+        </div>
+
         {iconData.map((icon, index) => (
           <IconButton
             key={index}
@@ -360,10 +359,10 @@ export const Table = ({
               <th>
                 <input
                   style={{
-                    width: '20px',
-                    height: '20px',
-                    display: 'inline-block',
-                    verticalAlign: 'middle',
+                    width: "20px",
+                    height: "20px",
+                    display: "inline-block",
+                    verticalAlign: "middle",
                   }}
                   type="checkbox"
                   checked={selectedRowKeys.length === rows.length}
@@ -457,12 +456,12 @@ export const Table = ({
                   <tr>
                     <td>
                       <input
-                      style={{
-                    width: '20px',
-                    height: '20px',
-                    display: 'inline-block',
-                    verticalAlign: 'middle',
-                  }}
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          display: "inline-block",
+                          verticalAlign: "middle",
+                        }}
                         type="checkbox"
                         onChange={(event) => handleCheckboxChange(event, row)}
                       />

@@ -63,7 +63,7 @@ export const ExpandedDataItem = styled.div`
   background-color: #f0f0f0;
 `;
 export const TheadStyle = {
-  'background-color': '#2991D6',
+  'backgroundColor': '#2991D6',
   'color':'#fff',
   'width':'10%',
 }
